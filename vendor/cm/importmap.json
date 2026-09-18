@@ -1,0 +1,20 @@
+{
+  "imports": {
+    "@codemirror/state": "./vendor/cm/codemirror_state.mjs",
+    "@codemirror/view": "./vendor/cm/codemirror_view.mjs",
+    "@codemirror/commands": "./vendor/cm/codemirror_commands.mjs",
+    "@codemirror/language": "./vendor/cm/codemirror_language.mjs",
+    "@codemirror/autocomplete": "./vendor/cm/codemirror_autocomplete.mjs",
+    "@codemirror/search": "./vendor/cm/codemirror_search.mjs",
+    "@codemirror/lint": "./vendor/cm/codemirror_lint.mjs",
+    "@codemirror/lang-cpp": "./vendor/cm/codemirror_lang-cpp.mjs",
+    "@lezer/common": "./vendor/cm/lezer_common.mjs",
+    "@lezer/lr": "./vendor/cm/lezer_lr.mjs",
+    "@lezer/highlight": "./vendor/cm/lezer_highlight.mjs",
+    "@lezer/cpp": "./vendor/cm/lezer_cpp.mjs",
+    "style-mod": "./vendor/cm/style-mod.mjs",
+    "w3c-keyname": "./vendor/cm/w3c-keyname.mjs",
+    "crelt": "./vendor/cm/crelt.mjs",
+    "@marijn/find-cluster-break": "./vendor/cm/marijn_find-cluster-break.mjs"
+  }
+}

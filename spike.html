@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AiProffsSnickarn spike — tcc-wasm chain</title>
+  <style>
+    body { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; margin: 24px; color: #171b22; }
+    h1 { font-size: 16px; }
+    pre { background: #f5f6f8; padding: 12px; border-radius: 6px; white-space: pre-wrap; }
+    #out { min-height: 80px; border-left: 4px solid #1f6feb; }
+  </style>
+</head>
+<body>
+  <h1>AiProffsSnickarn spike — bevisa kedjan</h1>
+  <p>Chain: C source → tcc.wasm (wasm32) → WAT → wabt wat2wasm → wasm binary → libc.wasm runtime → stdout</p>
+  <pre id="out">loading…</pre>
+
+  <script src="./vendor/ide-resources.js"></script>
+  <script src="./vendor/runtime.js"></script>
+  <script src="./vendor/wabt.js"></script>
+
+  <script>
+  (function () {
+    "use strict";
+
+    const FIB_SOURCE = String.raw`
+#include <stdio.h>
+#include <stdlib.h>
+
+static int fib(int n)
+{
+    if (n <= 1)
+        return n;
+    return fib(n - 1) + fib(n - 2);
+}
+
+int main(void)
+{
+    int i;
+    for (i = 0; i <= 10; ++i)
+        printf("fib(%d)=%d\n", i, fib(i));
+    return 0;
+}
+`;
+
+    const WAT_FEATURES = {
+      exceptions: true,
+      mutable_globals: true,
+      sat_float_to_int: true,
+      sign_extension: true,
+      multi_value: true,
+      bulk_memory: true,
+      reference_types: true
+    };
+
+    function report(obj) {
+      window.__spike = obj;
+      document.getElementById("out").textContent =
+        obj.ok === true ? JSON.stringify(obj, null, 2) : "FAIL: " + JSON.stringify(obj, null, 2);
+    }
+
+    async function run() {
+      let compiler, appRuntime;
+      try {
+        report({ phase: "boot", ok: false });
+        [compiler, appRuntime] = await Promise.all([
+          TccWasmRuntime.CompilerHost.create({
+            wasm: "./vendor/tcc.wasm",
+            libc: "./vendor/libc.wasm",
+            resources: TccWasmIdeResources
+          }),
+          TccWasmRuntime.AppRuntime.create({ libc: "./vendor/libc.wasm" })
+        ]);
+        report({ phase: "compile", ok: false });
+        const result = compiler.compileAppResult(FIB_SOURCE);
+        if (result.rc !== 0)
+          throw new Error("compile rc " + result.rc + ": " + result.diagnostics);
+
+        report({ phase: "assemble", ok: false });
+        const wabt = await WabtModule();
+        const watMod = wabt.parseWat("input.wat", result.wat, WAT_FEATURES);
+        let binary;
+        try {
+          watMod.resolveNames();
+          watMod.validate();
+          binary = watMod.toBinary({ write_debug_names: true }).buffer;
+        } finally {
+          watMod.destroy();
+        }
+
+        report({ phase: "run", ok: false });
+        const runResult = await appRuntime.run(binary, { stdin: "" });
+
+        const stdout = runResult.stdout;
+        const expected = "fib(0)=0\nfib(1)=1\nfib(2)=1\nfib(3)=2\nfib(4)=3\nfib(5)=5\nfib(6)=8\nfib(7)=13\nfib(8)=21\nfib(9)=34\nfib(10)=55";
+        const ok = runResult.rc === 0 && stdout.trim() === expected.trim();
+        report({
+          ok,
+          rc: runResult.rc,
+          stdout,
+          expected,
+          watBytes: result.wat.length,
+          wasmBytes: binary.length,
+          diagnostics: (result.diagnostics || "").trim(),
+          phase: "done"
+        });
+      } catch (err) {
+        report({ ok: false, phase: "error", error: String(err && err.stack ? err.stack : err) });
+      }
+    }
+
+    run();
+  })();
+  </script>
+</body>
+</html>
