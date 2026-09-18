@@ -2,7 +2,9 @@
 // Gemini-wrapper för C-kodgenerering i AiProffsSnickarn.
 
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const MODELS_CACHE_KEY = 'AI_MODELS_CACHE';
+const MODELS_CACHE_KEY = 'AIPROFFS_AI_MODELS_CACHE';
+const AI_KEY = 'AIPROFFS_AI_KEY';
+const AI_MODEL = 'AIPROFFS_AI_MODEL';
 const MODELS_CACHE_TTL = 24 * 60 * 60 * 1000;
 
 async function listModels(apiKey, force) {
@@ -155,18 +157,18 @@ async function generateOnce(history, userMessage, apiKey, modelId, systemPrompt,
 }
 
 function initSettings(apiKey, modelId) {
-  if (apiKey) localStorage.setItem('AI_KEY', apiKey);
-  if (modelId) localStorage.setItem('AI_MODEL', modelId);
-  return { key: localStorage.getItem('AI_KEY'), model: localStorage.getItem('AI_MODEL') };
+  if (apiKey) localStorage.setItem(AI_KEY, apiKey);
+  if (modelId) localStorage.setItem(AI_MODEL, modelId);
+  return { key: localStorage.getItem(AI_KEY), model: localStorage.getItem(AI_MODEL) };
 }
 
 function loadSettings() {
-  return { key: localStorage.getItem('AI_KEY'), model: localStorage.getItem('AI_MODEL') };
+  return { key: localStorage.getItem(AI_KEY), model: localStorage.getItem(AI_MODEL) };
 }
 
 function clearSettings() {
-  localStorage.removeItem('AI_KEY');
-  localStorage.removeItem('AI_MODEL');
+  localStorage.removeItem(AI_KEY);
+  localStorage.removeItem(AI_MODEL);
 }
 
 // Expose globally
