@@ -96,11 +96,17 @@ function setReadOnly(view, ro) {
   });
 }
 
+function currentView() {
+  const host = document.getElementById("editor-host");
+  return (host && host.view) || null;
+}
+
 const readOnlyCompartment = new Compartment();
 
 globalThis.AiProffsEditor = {
   createEditor,
   setContent,
   getContent,
-  setReadOnly
+  setReadOnly,
+  currentView
 };
