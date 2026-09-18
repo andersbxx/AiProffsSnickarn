@@ -147,11 +147,11 @@
           </button>
         </header>
 
-        <div class="ai-sheet-body">
+        <form class="ai-sheet-body" id="aiSettingsForm">
           <label class="ai-field-label" for="aiApiKey">Gemini API-nyckel</label>
           <div class="ai-key-row">
             <input type="password" id="aiApiKey" placeholder="AIza…" autocomplete="off">
-            <button class="ai-eye-btn" id="aiEyeBtn" aria-label="Visa/dölj nyckel">
+            <button class="ai-eye-btn" id="aiEyeBtn" aria-label="Visa/dölj nyckel" type="button">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
@@ -161,7 +161,7 @@
             <select id="aiModelSelect">
               <option value="">Ange API-nyckel först…</option>
             </select>
-            <button class="ai-mini-btn" id="aiRefreshModels" title="Hämta modelllista från API">↻</button>
+            <button class="ai-mini-btn" id="aiRefreshModels" title="Hämta modelllista från API" type="button">↻</button>
           </div>
           <p class="ai-hint" id="aiModelHint"></p>
 
@@ -169,10 +169,10 @@
             <label class="ai-field-label" for="aiCustomModel">Anpassat modell-ID</label>
             <input type="text" id="aiCustomModel" placeholder="t.ex. gemini-3.8-flash" autocomplete="off">
           </div>
-        </div>
+        </form>
 
         <div class="ai-sheet-actions">
-          <button class="ai-save-btn" id="aiStartBtn">Spara & börja bygga</button>
+          <button class="ai-save-btn" id="aiStartBtn" form="aiSettingsForm" type="button">Spara & börja bygga</button>
           <p class="ai-tip">Din nyckel sparas bara i den här webbläsaren och skickas direkt till Google.
             <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Skaffa en gratis nyckel</a>.
           </p>
