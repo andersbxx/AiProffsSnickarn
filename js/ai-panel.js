@@ -640,8 +640,6 @@ function initAiPanel() {
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
 
-  if (!loadSettings().key && !elements.aiPanel.classList.contains('open')) openSheet();
-
   window.initAiPanelContext = setContext;
 }
 window.initAiPanel = initAiPanel;
